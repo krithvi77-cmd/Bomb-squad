@@ -241,7 +241,7 @@ function performPunch(attackerId, angle) {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < PUNCH_RANGE) {
-            // ✅ Fix: define hit angle correctly
+            
             const hitAngle = Math.atan2(dy, dx);
             target.getHit(hitAngle);
         }
