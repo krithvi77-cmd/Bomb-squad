@@ -163,11 +163,12 @@
 <body>
     <div id="gameContainer">
         <div id="menu">
-            <h1>💣 BOMB SQUAD 💣</h1>
+            <h1> BOMB SQUAD </h1>
             <p style="margin-bottom: 20px;">Capture the flag and score in enemy goal!</p>
             <input type="text" id="playerName" placeholder="Enter your name" maxlength="15">
-            <br>
+             <br>
             <button class="red-btn" onclick="joinGame('red')">Join Red Team</button>
+  
             <button class="blue-btn" onclick="joinGame('blue')">Join Blue Team</button>
             <p style="margin-top: 20px; font-size: 12px;">Connecting to server...</p>
         </div>
@@ -179,6 +180,7 @@
                 <div class="team-score red-team">🔴 Red: <span id="redScore">0</span></div>
                 <div class="team-score blue-team">🔵 Blue: <span id="blueScore">0</span></div>
             </div>
+          
             <div id="playerInfo">Players: <span id="playerCount">0</span></div>
         </div>
 
@@ -194,27 +196,32 @@
         const ctx = canvas.getContext('2d');
         const menu = document.getElementById('menu');
         const ui = document.getElementById('ui');
+        
         const controls = document.getElementById('controls');
         const winMessage = document.getElementById('winMessage');
 
-        // Set canvas size
-        canvas.width = 1200;
+                canvas.width = 1200;
         canvas.height = 600;
 
-        // WebSocket connection
+        
         let ws;
         let playerId;
+
         let players = {};
+        
         let flag = null;
+        
         let goals = { red: null, blue: null };
         let scores = { red: 0, blue: 0 };
 
-        // Input handling
+        
         const keys = {};
+        
         let mousePos = { x: 0, y: 0 };
+        
         let mouseDown = false;
 
-        // Connect to WebSocket server
+        
         function connectToServer() {
             // ws = new WebSocket('https://89t74lt3-4577.inc1.devtunnels.ms/');
             ws = new WebSocket("ws://localhost:4577");
@@ -257,35 +264,39 @@
 
         function handleServerMessage(data) {
             switch(data.type) {
-                case 'init':
-                    playerId = data.id;
+         ]       case 'init':
+                     playerId = data.id;
                     players = data.players;
+          
                     flag = data.flag;
                     goals = data.goals;
+                    
                     scores = data.scores;
                     updateScores();
                     break;
-                case 'update':
+                 case 'update':
                     players = data.players;
                     flag = data.flag;
-                    scores = data.scores;
+                     scores = data.scores;
                     updateScores();
                     break;
-                case 'win':
+            case 'win':
                     showWinMessage(data.team);
                     break;
-            }
+             }
         }
 
         function updateScores() {
             document.getElementById('redScore').textContent = scores.red;
+            
             document.getElementById('blueScore').textContent = scores.blue;
             document.getElementById('playerCount').textContent = Object.keys(players).length;
         }
 
         function showWinMessage(team) {
             const color = team === 'red' ? '🔴' : '🔵';
-            winMessage.textContent = `${color} ${team.toUpperCase()} TEAM WINS! 🏆`;
+            winMessage.textContent = `${color} ${team.toUpperCase()} TEAM WINS!`;
+            
             winMessage.style.borderColor = team === 'red' ? '#dc143c' : '#1e90ff';
             winMessage.classList.remove('hidden');
 
@@ -294,8 +305,7 @@
             }, 3000);
         }
 
-        // Input listeners
-        document.addEventListener('keydown', (e) => {
+                document.addEventListener('keydown', (e) => {
             keys[e.key.toLowerCase()] = true;
             
             if (e.key.toLowerCase() === 'e') {
@@ -304,6 +314,7 @@
         });
 
         document.addEventListener('keyup', (e) => {
+        
             keys[e.key.toLowerCase()] = false;
         });
 
@@ -313,15 +324,14 @@
             mousePos.y = e.clientY - rect.top;
         });
 
-       // 🧠 SPACEBAR to punch
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
-                e.preventDefault(); // stop page scroll
+                e.preventDefault(); 
 
                 if (ws && ws.readyState === WebSocket.OPEN && players[playerId]) {
                     const me = players[playerId];
 
-                    // Compute angle from your player position to your mouse
+                
                     const angle = Math.atan2(mousePos.y - me.y, mousePos.x - me.x);
 
                     ws.send(JSON.stringify({ 
@@ -339,17 +349,18 @@
         });
 
 
-        // Game loop
+        
         function gameLoop() {
-            // Send input to server
+        
             if (ws && ws.readyState === WebSocket.OPEN) {
                 const input = {
                     type: 'input',
                     keys: {
                     w: keys['arrowup'] || false,
-                    a: keys['arrowleft'] || false,
-                    s: keys['arrowdown'] || false,
-                    d: keys['arrowright'] || false
+                     a: keys['arrowleft'] || false,
+                     s: keys['arrowdown'] || false,
+           
+                        d: keys['arrowright'] || false
                 },
                     mouse: mousePos
                 };
@@ -362,11 +373,10 @@
         }
 
         function render() {
-            // Clear canvas
+    
             ctx.fillStyle = '#7ec850';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw center line
             ctx.strokeStyle = 'white';
             ctx.lineWidth = 3;
             ctx.setLineDash([20, 10]);
@@ -376,7 +386,7 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Draw goals
+    
             if (goals.red) {
                 ctx.fillStyle = 'rgba(220, 20, 60, 0.3)';
                 ctx.fillRect(goals.red.x, goals.red.y, goals.red.w, goals.red.h);
@@ -392,16 +402,16 @@
                 ctx.strokeRect(goals.blue.x, goals.blue.y, goals.blue.w, goals.blue.h);
             }
 
-            // Draw flag
+    
             if (flag && !flag.carrier) {
                 ctx.save();
                 ctx.translate(flag.x, flag.y);
                 
-                // Flag pole
+    
                 ctx.fillStyle = '#8b4513';
                 ctx.fillRect(-2, -20, 4, 20);
                 
-                // Flag
+    
                 ctx.fillStyle = '#ffd700';
                 ctx.beginPath();
                 ctx.moveTo(0, -20);
@@ -413,7 +423,7 @@
                 ctx.restore();
             }
 
-            // Draw players
+
             for (let id in players) {
                 const p = players[id];
                 
@@ -427,12 +437,12 @@
                 ctx.arc(0, 0, p.r, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Player outline
+                
                 ctx.strokeStyle = id === playerId ? '#ffd700' : '#333';
                 ctx.lineWidth = id === playerId ? 3 : 2;
                 ctx.stroke();
 
-                // Direction indicator
+                
                 ctx.fillStyle = 'white';
                 ctx.beginPath();
                 ctx.arc(p.r * 0.5, 0, 3, 0, Math.PI * 2);
@@ -440,7 +450,7 @@
 
                 ctx.restore();
 
-                // Player name
+                
                 ctx.fillStyle = 'white';
                 ctx.strokeStyle = 'black';
                 ctx.lineWidth = 3;
@@ -449,7 +459,7 @@
                 ctx.strokeText(p.name, p.x, p.y - p.r - 5);
                 ctx.fillText(p.name, p.x, p.y - p.r - 5);
 
-                // Flag on player
+                
                 if (flag && flag.carrier === id) {
                     ctx.save();
                     ctx.translate(p.x, p.y - p.r - 10);
@@ -467,8 +477,7 @@
             }
         }
 
-        // Start
-        connectToServer();
+          connectToServer();
         gameLoop();
     </script>
 </body>
