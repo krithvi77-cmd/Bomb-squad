@@ -358,7 +358,7 @@ function generateId() {
 setInterval(() => {
     checkGoals();
     broadcast({ type: 'update', players: getPlayersData(), flag, scores });
-}, 1000 / 60);
+}, 1000 / 20);
 
 // Start server
 const PORT = process.env.PORT || 4577;
