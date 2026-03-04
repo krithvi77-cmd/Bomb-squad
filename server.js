@@ -362,6 +362,7 @@ setInterval(() => {
 
 // Start server
 const PORT = process.env.PORT || 4577;
+
 server.listen(PORT, () => {
     console.log(`Bomb Squad server running on port ${PORT}`);
 });
