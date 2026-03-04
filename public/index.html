@@ -224,7 +224,8 @@
         
         function connectToServer() {
             // ws = new WebSocket('https://89t74lt3-4577.inc1.devtunnels.ms/');
-            ws = new WebSocket("ws://localhost:4577");
+            const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+            ws = new WebSocket(protocol + "//" + location.host);
 
             ws.onopen = () => {
                 console.log('Connected to server');
