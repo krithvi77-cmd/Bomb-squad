@@ -11,7 +11,7 @@ app.use(express.static('public'));
 const CANVAS_WIDTH = 1200;
 const CANVAS_HEIGHT = 600;
 const PLAYER_RADIUS = 20;
-const PLAYER_SPEED = 40;
+const PLAYER_SPEED = 4;
 const PUNCH_RANGE = 50;
 const PUNCH_FORCE = 150;
 const FLAG_PICKUP_RANGE = 40;
